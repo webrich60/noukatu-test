@@ -2,8 +2,15 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>やさしい脳活日和｜10の脳活ゲーム・テスト版</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#eaf7f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="脳活日和">
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="icon" type="image/png" sizes="192x192" href="./assets/icons/icon-192.png">
+    <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png">
+    <title>やさしい脳活日和｜12の脳活ゲーム・テスト版 v1.6.1</title>
     <!-- Tailwind utilities: local CSS embedded for offline-safe static hosting -->
     <style id="tailwind-local-utilities">
 /*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
@@ -1773,9 +1780,252 @@
   @media(min-width:700px){.game-menu-card{min-height:166px}.game-card-art{width:108px;height:90px}.game-card-title{font-size:16px}}
   @media(max-width:370px){.game-card-art{width:82px;height:72px}.game-card-title{font-size:14px}.game-menu-card{min-height:147px}}
   @media(prefers-reduced-motion:reduce){.game-menu-card{transition:none}}
+
+  /* v1.3: ホームではカード一覧だけをスクロール。ゲーム画面は従来どおり。 */
+  body.home-mode {
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+  body.home-mode > header { flex: 0 0 auto; }
+  body.home-mode > main {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    padding-bottom: 0;
+  }
+  body.home-mode #homeScreen {
+    height: 100%;
+    max-height: none !important;
+    min-height: 0;
+    overflow: hidden !important;
+  }
+  #gameCardScroll.game-list-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    padding: 4px 5px 14px 2px;
+    scrollbar-width: thin;
+    scrollbar-color: #92bcae #eaf5ef;
+    border-radius: 13px;
+  }
+  #gameCardScroll::-webkit-scrollbar { width: 7px; }
+  #gameCardScroll::-webkit-scrollbar-thumb { background: #92bcae; border-radius: 12px; }
+  #gameCardScroll::-webkit-scrollbar-track { background: #eaf5ef; border-radius: 12px; }
+  #gameCardScroll:focus-visible { outline: 3px solid #27765f; outline-offset: -3px; }
+  #gameCardGrid { width: 100%; padding-bottom: 4px; }
+  /* 画面の縦幅を節約。ゲーム選択は十分大きいタップ領域を確保。 */
+  @media (max-width: 619px) {
+    .game-menu-card { min-height: 123px; padding: 7px 4px; gap: 3px; }
+    .game-card-art { width: 82px; height: 70px; }
+    .game-card-title { font-size: 14px; }
+    .game-card-desc { font-size: 10px; }
+  }
+  /* タブレットでは3列にして、縦スクロール量をさらに軽減。 */
+  @media (min-width: 620px) {
+    #homeScreen #gameCardGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .game-menu-card { min-height: 156px; }
+  }
+  @media (max-height: 650px) and (min-width: 620px) {
+    .game-menu-card { min-height: 124px; }
+    .game-card-art { height: 65px; width: 79px; }
+  }
+  /* 極端に低い画面や横向きでは、上部設定が隠れないよう全体スクロールを許可。 */
+  @media (max-height: 520px) {
+    body.home-mode { height: auto; min-height: 100dvh; overflow-y: auto; }
+    body.home-mode > main { min-height: 0; overflow: visible; }
+    body.home-mode #homeScreen { height: auto; overflow: visible !important; }
+    #gameCardScroll.game-list-scroll { flex: 0 0 auto; height: min(55dvh, 300px); min-height: 160px; }
+  }
+  /* スワイプをブラウザに渡し、カードはクリックで確実に起動。 */
+  #gameCardScroll .game-menu-card { touch-action: pan-y; }
+</style>
+
+<style id="home-airy-v14">
+  /* v1.4: 画面上部の文章を減らし、詰め込みを解消。ゲーム部分の縦スクロールは維持 */
+  #homeScreen { padding: 14px 13px 12px !important; gap: 0; }
+  #homeScreen > button:first-of-type {
+    min-height: 50px; margin-bottom: 15px !important; padding: 12px !important;
+    line-height: 1.3; font-size: clamp(16px, 4.4vw, 19px) !important;
+  }
+  #homeScreen > .bg-gradient-to-br { margin-bottom: 14px !important; padding: 12px 12px 14px !important; }
+  #homeScreen > .bg-gradient-to-br > div:first-child { margin-bottom: 8px !important; }
+  #homeScreen .diff-btn {
+    white-space: nowrap !important; overflow: hidden; min-width: 0;
+    min-height: 46px; font-size: clamp(12px, 3.7vw, 16px) !important;
+    line-height: 1.2 !important; padding: 8px 3px !important;
+  }
+  #homeScreen #currentDiffLabel { white-space: nowrap; }
+  .usage-accordion { margin-bottom: 18px !important; background: #f6fbf7; }
+  .usage-accordion summary { min-height: 46px; padding: 9px 11px; font-size: 13px; }
+  .usage-accordion .usage-name { white-space: nowrap; }
+  #homeScreen > div.flex.items-center.justify-between { margin-bottom: 11px !important; align-items: center; }
+  #homeScreen > div.flex.items-center.justify-between h2 { font-size: 16px !important; line-height: 1.3; }
+  #homeScreen > div.flex.items-center.justify-between > span { font-size: 12px !important; white-space: nowrap; margin-left: 10px; }
+  @media(max-width: 370px) {
+    .usage-accordion summary { gap: 6px; }
+    .usage-accordion .usage-open,.usage-accordion .usage-close { font-size: 11px; }
+    #homeScreen > div.flex.items-center.justify-between h2 { font-size: 15px !important; }
+    #homeScreen { padding-left: 11px !important; padding-right: 11px !important; }
+  }
+</style>
+
+<style id="special-challenge-v15">
+  .special-section {padding:20px 2px 14px; display:flex;flex-direction:column;gap:11px;}
+  .special-head {display:flex;align-items:center;gap:11px;background:#f0faf6;border:2px solid #b5e2d0;border-radius:17px;padding:12px 10px;color:#1a4b3b;}
+  .special-owl {width:57px;height:57px;object-fit:contain;flex-shrink:0;}
+  .special-kicker {font-size:13px;font-weight:900;color:#955507;line-height:1.4;}
+  .special-head h2 {font-size:19px;color:#a14c08;font-weight:900;line-height:1.4;margin:1px 0;}
+  .special-head p {font-size:12px;line-height:1.4;font-weight:700;margin-top:3px;color:#3d6556;}
+  .special-card {display:flex;align-items:center;gap:11px;width:100%;border:2.5px solid;border-radius:19px;padding:11px;text-align:left;min-height:131px;box-shadow:0 4px 12px #0000000d;cursor:pointer;touch-action:pan-y;}
+  .special-card:active {transform:scale(.985)}
+  .special-card:focus-visible {outline:3px solid #155e75;outline-offset:2px;}
+  .special-card--gold {background:#fffbeb;border-color:#e9af20;color:#6b3a06;}
+  .special-card--purple {background:#faf5ff;border-color:#af84e6;color:#4b2876;}
+  .special-art {flex:0 0 104px;width:104px;height:104px;object-fit:cover;border-radius:15px;}
+  .special-card-body {display:flex;flex:1;min-width:0;flex-direction:column;gap:5px;}
+  .special-card-title {font-size:17px;line-height:1.35;font-weight:900;overflow-wrap:anywhere;}
+  .special-card-sub {font-size:13px;font-weight:800;line-height:1.4;}
+  .special-card-badge {background:#fff8d8;border-radius:20px;padding:5px 8px;display:inline-block;width:max-content;max-width:100%;font-size:12px;font-weight:800;line-height:1.35;}
+  .special-card--purple .special-card-badge {background:#eae1ff;}
+  .special-arrow {font-size:28px;line-height:1;flex:0 0 17px;}
+  .special-back {align-self:flex-start;background:#f0faf6;border:2px solid #a5dac7;border-radius:13px;padding:8px 12px;color:#165544;font-size:14px;font-weight:900;min-height:44px;}
+  .special-choice-top {display:flex;align-items:center;gap:12px;margin:16px 0;}
+  .special-choice-top img {width:105px;height:105px;border-radius:17px;object-fit:contain;}
+  .special-choice-top h2 {font-weight:900;color:#183b40;font-size:20px;line-height:1.3;margin:4px 0;}
+  .special-choice-top p {font-size:13px;font-weight:800;color:#426054;line-height:1.5;}
+  .special-help {font-size:15px;line-height:1.75;font-weight:700;color:#294640;background:#f1f9f4;border-radius:14px;padding:13px 15px;margin-bottom:15px;}
+  .special-action {display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border-radius:16px;padding:12px 9px;min-height:79px;margin-bottom:13px;font-size:18px;font-weight:900;box-shadow:0 4px 0 #0b473526;}
+  .special-action small {font-size:12px;font-weight:700;line-height:1.4;}
+  .special-action--practice {color:#14543e;background:#dbf8e9;border:2px solid #78cba4;}
+  .special-action--normal {color:#713906;background:#ffdb83;border:2px solid #dfa22b;}
+  .special-best {font-size:13px;color:#3d6053;font-weight:800;text-align:center;}
+  .special-board-wrap {display:flex;flex-direction:column;align-items:center;gap:12px;width:100%;max-width:370px;margin:0 auto;}
+  .special-instruction {font-size:15px;font-weight:900;color:#213c41;line-height:1.5;text-align:center;}
+  .rotation-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;aspect-ratio:1;width:100%;}
+  .rotation-cell {display:flex;align-items:center;justify-content:center;background:#e5eaf1;border:2px solid #c7d5e3;border-radius:8px;font-size:19px;color:#fff;}
+  .rotation-cell--lit {background:#efb943;border-color:#c88d17;box-shadow:inset 0 -2px 0 #a27730;}
+  .rotation-memory {max-width:234px;}
+  .rotation-choices {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;width:100%;}
+  .rotation-choice {background:white;border:2px solid #9ab8c3;border-radius:14px;padding:9px;min-width:0;min-height:120px;box-shadow:0 3px 0 #c5d4d6;}
+  .rotation-choice .rotation-grid {gap:3px;}
+  .rotation-choice .rotation-cell {border-width:1px;border-radius:5px;font-size:10px;}
+  .rotation-choice:focus-visible {outline:4px solid #17a292;outline-offset:2px;}
+  .rotation-choice:disabled {opacity:.55;}
+  .rotation-label {display:block;font-size:13px;font-weight:900;text-align:center;color:#314858;margin-bottom:5px;}
+  .special-focus-formula {font-size:clamp(27px,9vw,37px);font-weight:900;text-align:center;color:#2b4475;background:#f6f6fd;border:2px solid #aea6e4;border-radius:16px;padding:14px 8px;width:100%;}
+  .special-answer-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;width:100%;}
+  .special-answer {background:#fff;border:2px solid #a6b4cf;min-height:71px;border-radius:15px;font-size:25px;font-weight:900;color:#293e66;box-shadow:0 3px 0 #cdd5df;}
+  .special-answer:focus-visible,.special-button:focus-visible {outline:4px solid #23a796;outline-offset:2px;}
+  .special-button {min-height:51px;border-radius:13px;border:2px solid #3c9d82;background:#defff0;color:#17573e;padding:10px 14px;font-size:16px;font-weight:900;width:100%;}
+  .special-mode-tag {border-radius:20px;padding:5px 9px;font-size:12px;font-weight:900;background:#e5f8ee;color:#165940;}
+  @media(max-width:380px) { .special-art {flex-basis:88px;width:88px;height:88px;}.special-card {min-height:116px;padding:8px;gap:8px;}.special-card-title {font-size:15px;}.special-card-sub{font-size:12px}.special-card-badge{font-size:11px}.special-owl{width:45px;height:45px}.special-head h2{font-size:17px} }
+  @media(prefers-reduced-motion:reduce){.special-card:active{transform:none}}
+</style>
+
+<style id="pwa-install-styles-v160">
+  /* 控えめなヘッダーボタン。既存の4つの操作ボタンとは別の位置。 */
+  header > div:first-child { gap: 5px; justify-content: space-between; }
+  #homeInstallBtn {
+    flex: 0 0 auto; align-self: center; min-height: 32px; padding: 5px 8px;
+    border: 1px solid #c6dacd; border-radius: 12px; background: #f2f8f3;
+    color: #456858; font-size: 11px; font-weight: 800; line-height: 1.2;
+    box-shadow: none; white-space: nowrap; cursor: pointer;
+  }
+  #homeInstallBtn:hover, #homeInstallBtn:focus-visible {background:#e3f2e9;border-color:#75b497;outline-offset:2px;}
+  #homeInstallBtn[hidden] {display:none !important;}
+  .install-overlay[hidden] {display:none !important;}
+  .install-overlay {
+    position: fixed; inset: 0; z-index: 120; background: rgba(13,35,29,.64);
+    display: flex; align-items: center; justify-content: center;
+    padding: max(14px,env(safe-area-inset-top)) 14px max(14px,env(safe-area-inset-bottom));
+  }
+  .install-sheet {
+    position: relative; width: min(100%, 390px); max-height: min(90dvh,650px); overflow-y: auto;
+    border: 3px solid #9fd9bd; border-radius: 24px; background: #fffef9;
+    color: #1a4437; padding: 22px 18px 16px; box-shadow: 0 14px 45px rgba(0,0,0,.22);
+    font-weight: 700; line-height: 1.7;
+  }
+  .install-sheet h2 {font-size:19px; font-weight:900; line-height:1.4; padding-right:25px; margin:0 0 8px;}
+  .install-sheet p {margin:0 0 12px; font-size:14px;}
+  .install-sheet ol {padding-left:1.65em; list-style:decimal; margin:0 0 12px; font-size:15px;}
+  .install-sheet li {margin:5px 0;}
+  .install-sheet strong {color:#205f4a;}
+  .install-sheet .install-note {font-size:12px;color:#516a60;margin-bottom:0;}
+  .install-sheet button.install-close-x {position:absolute;right:12px;top:9px;border:0;background:transparent;font-size:24px;font-weight:800;min-width:38px;min-height:38px;color:#486c5a;}
+  .install-sheet button.install-done {margin-top:13px; width:100%; min-height:45px;background:#e7f6eb;border:2px solid #93c8a6;border-radius:13px;color:#225740;font-size:15px;font-weight:900;}
+  @media(max-width:360px) {
+    #homeInstallBtn {font-size:10px; padding:5px 5px;}
+    header h1 {font-size:12px !important;}
+  }
+</style>
+
+<style id="simple-pager-v161">
+/* v1.6.1: 長いカード一覧のスクロールをやめ、4ページに切り替える。 */
+body.home-mode {
+  height:auto !important; min-height:100dvh !important;
+  overflow-x:hidden !important; overflow-y:auto !important;
+  overscroll-behavior-y:contain;
+  justify-content:flex-start;
+}
+body.home-mode > header {flex:0 0 auto;}
+body.home-mode > main {flex:0 0 auto !important;min-height:0 !important;overflow:visible !important;width:100%;padding-bottom:8px;}
+body.home-mode #homeScreen {height:auto !important;min-height:0 !important;max-height:none !important;overflow:visible !important;}
+#gameCardScroll.game-list-scroll {flex:0 0 auto !important;min-height:0 !important;height:auto !important;overflow:visible !important;padding:0 2px 0 !important;touch-action:auto !important;}
+#gameCardGrid {padding-bottom:0 !important;}
+#homeScreen #gameCardGrid {grid-template-columns:repeat(2,minmax(0,1fr)) !important;}
+#gameCardGrid > button[hidden], #gameCardScroll .special-section[hidden] {display:none !important;}
+#gamePager {display:flex;align-items:center;justify-content:space-between;gap:9px;margin:12px 0 2px;flex:0 0 auto;}
+.game-page-arrow {min-height:43px;border-radius:12px;background:#ebf7f0;border:2px solid #a5d6b9;color:#14513c;font-size:13px;font-weight:900;padding:8px 10px;white-space:nowrap;}
+.game-page-arrow:disabled {opacity:.43;cursor:default;}
+.game-page-dots {display:flex;align-items:center;gap:7px;}
+.game-page-dot {min-width:40px;min-height:43px;padding:6px 8px;border-radius:12px;background:#fff;border:2px solid #bcd4c8;color:#315c4b;font-size:16px;font-weight:900;}
+.game-page-dot[aria-current="page"] {background:#277d61;color:white;border-color:#216c55;box-shadow:0 2px 0 #164d3d;}
+.game-page-arrow:focus-visible,.game-page-dot:focus-visible {outline:3px solid #126a58;outline-offset:2px;}
+.game-page-help {font-size:12px;color:#597468;font-weight:800;text-align:center;line-height:1.4;margin:2px 0 0;}
+/* スペシャル2種は3ページ目にコンパクトに表示 */
+#gameCardScroll .special-section {padding:10px 0 1px;gap:8px;}
+#gameCardScroll .special-head {padding:7px 9px;gap:9px;}
+#gameCardScroll .special-owl {width:42px;height:42px;}
+#gameCardScroll .special-head h2 {font-size:16px;line-height:1.2;}
+#gameCardScroll .special-head p {font-size:11px;margin-top:1px;}
+#gameCardScroll .special-kicker {font-size:12px;}
+#gameCardScroll .special-card {min-height:89px;padding:6px 8px;gap:8px;}
+#gameCardScroll .special-art {flex-basis:75px;width:75px;height:75px;}
+#gameCardScroll .special-card-title {font-size:15px;}
+#gameCardScroll .special-card-sub {font-size:12px;}
+#gameCardScroll .special-card-badge {font-size:11px;padding:3px 6px;}
+/* 一覧操作がタップと競合しないようにカード内の縦スワイプ専用指定を取り除く */
+#gameCardScroll .game-menu-card,#gameCardScroll .special-card {touch-action:manipulation;}
+@media (min-width:620px) {
+  #homeScreen #gameCardGrid {grid-template-columns:repeat(4,minmax(0,1fr)) !important;}
+  #gameCardScroll .special-section {display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  #gameCardScroll .special-head {grid-column:1/-1;}
+  #gameCardScroll .special-card {min-width:0;}
+}
+@media (max-width:380px) {
+  #gamePager {gap:4px;}
+  .game-page-arrow {font-size:12px;padding:6px 7px;}
+  .game-page-dot {min-width:33px;padding-left:5px;padding-right:5px;}
+  .game-page-dots {gap:3px;}
+}
+@media (max-height:700px) and (max-width:619px) {
+  #homeScreen > button:first-of-type {min-height:44px !important;margin-bottom:9px !important;padding:8px !important;}
+  #homeScreen > .bg-gradient-to-br {margin-bottom:8px !important;padding:8px 10px !important;}
+  #homeScreen .diff-btn {min-height:41px;}
+  #homeScreen .usage-accordion {margin-bottom:10px !important;}
+  #homeScreen .game-menu-card {min-height:114px;}
+  #homeScreen .game-card-art {height:62px;width:72px;}
+}
 </style>
 </head>
-<body id="appBody" class="w-full flex flex-col justify-between items-center p-2 sm:p-3">
+<body id="appBody" class="home-mode w-full flex flex-col justify-between items-center p-2 sm:p-3">
 
     <!-- ヘッダーエリア -->
     <header class="w-full max-w-lg bg-white/95 backdrop-blur-md border-2 border-emerald-200 rounded-2xl px-2.5 py-1.5 shadow-md flex justify-between items-center flex-shrink-0 mb-1">
@@ -1786,8 +2036,9 @@
                     <span>やさしい脳活日和</span>
                     <span id="headerUserBadge" class="bg-amber-200 text-amber-900 text-[12px] px-1.5 py-0.2 rounded-full border border-amber-400 font-extrabold truncate max-w-[90px]">ゲスト様</span>
                 </h1>
-                <p id="headerSubtitle" class="text-[12px] text-amber-700 font-bold truncate">フクロウといっしょに楽しくチャレンジ！</p>
+                <p id="headerSubtitle" class="sr-only">フクロウといっしょに楽しくチャレンジ！</p>
             </div>
+            <button type="button" id="homeInstallBtn" onclick="handleInstallClick()" title="インストール／ホーム画面に追加" aria-label="ホーム画面に追加する方法を見る">＋ ホームに追加</button>
         </div>
         <div class="flex items-center space-x-1">
             <!-- ユーザー登録・プロフィールボタン -->
@@ -1821,14 +2072,14 @@
             <!-- ① おまかせゲーム開始 -->
             <button onclick="quickStartRandomGame()" class="btn-3d w-full bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-400 hover:from-amber-400 text-amber-950 font-black py-2.5 px-3 rounded-2xl border-2 border-amber-600 text-sm sm:text-base flex items-center justify-center space-x-1.5 shadow flex-shrink-0 mb-2">
                 <span class="text-sm">▶</span>
-                <span id="quickStartBannerText">今日のおすすめを遊ぶ</span>
+                <span id="quickStartBannerText">おまかせで遊ぶ</span>
             </button>
 
             <!-- ② 難易度（スピード）選択 -->
             <div class="bg-gradient-to-br from-amber-50 to-orange-50 px-3 py-2 rounded-xl border border-amber-300 flex-shrink-0 mb-2.5">
                 <div class="flex items-center justify-between mb-1">
-                    <span class="text-[12px] font-extrabold text-amber-900">⚡ スピード設定</span>
-                    <span class="text-[12px] text-amber-700 font-bold" id="currentDiffLabel">設定：ゆっくり</span>
+                    <span class="text-[12px] font-extrabold text-amber-900">⚡ スピードを選ぶ</span>
+                    <span class="text-[12px] text-amber-700 font-bold" id="currentDiffLabel">ゆっくり</span>
                 </div>
                 <div class="grid grid-cols-3 gap-1.5">
                     <button onclick="setDifficulty('slow')" id="diff-slow" class="diff-btn btn-3d bg-emerald-600 text-white py-1.5 px-1 rounded-lg font-black text-[12px] border border-emerald-800 flex items-center justify-center">
@@ -1843,12 +2094,11 @@
                 </div>
             </div>
 
-            <p class="owl-greeting">🦉 「きょうは何に挑戦する？ ゆっくりでも大丈夫！」</p>
             <!-- 通常は閉じておき、タップで扉のように開くご利用案内（JavaScript不要） -->
             <details class="usage-accordion" id="usageAccordion">
                 <summary>
                     <span class="usage-door" aria-hidden="true">🚪</span>
-                    <span class="usage-name">ご利用案内・音と保存について</span>
+                    <span class="usage-name">使い方・保存について</span>
                     <span class="usage-open" aria-hidden="true">開く</span>
                     <span class="usage-close" aria-hidden="true">閉じる</span>
                     <span class="usage-arrow" aria-hidden="true">⌄</span>
@@ -1863,14 +2113,15 @@
                 <div class="flex items-center space-x-1">
                     <span class="text-sm">🦉</span>
                     <h2 class="text-sm sm:text-base font-black text-amber-950 tracking-wide">
-                        フクロウと楽しむ10の脳活ゲーム
+                        12の脳活ゲーム
                     </h2>
                 </div>
-                <span class="text-[12px] text-amber-800 font-bold">タッチしてスタート</span>
+                <span class="text-[12px] text-amber-800 font-bold">ページを選ぶ</span>
             </div>
 
-            <!-- ④ 2列×5行 カード型グリッド（下端に余裕を持たせ、どの機種でも見切れずにタップ可能） -->
-            <div class="grid grid-cols-2 gap-2.5 flex-grow my-0.5 pb-4">
+            <!-- ④ 通常ゲーム3ページ・挑戦ゲーム1ページ。長い縦スクロールは不要。 -->
+            <div id="gameCardScroll" class="game-list-scroll" role="region" aria-label="12種類の脳活ゲームをページ切り替えで選べます">
+              <div id="gameCardGrid" class="grid grid-cols-2 gap-2.5">
                 
                 <!-- 1: 笑顔タッチ -->
                 <button type="button" onclick="startGame('whack')" class="menu-card game-menu-card bg-orange-50/90 border-bold-orange" aria-label="笑顔タッチを始める">
@@ -1942,7 +2193,52 @@
                     <span class="game-card-desc">違うものを探そう</span>
                 </button>
 
+
+              </div>
+              <section class="special-section" aria-labelledby="specialChallengeHeading">
+                <div class="special-head">
+                  <img src="assets/owl.png" alt="" class="special-owl" loading="lazy"/>
+                  <div>
+                    <div class="special-kicker">🏆 フクロウからの挑戦状！</div>
+                    <h2 id="specialChallengeHeading">スペシャルチャレンジ</h2>
+                    <p>いつもの脳活に慣れたら挑戦してみよう♪</p>
+                  </div>
+                </div>
+                <button type="button" class="special-card special-card--gold" aria-label="暗転ローテーションを選ぶ" onclick="openSpecialChoice('rotation')">
+                  <img src="assets/rotation.webp" class="special-art" alt="" loading="lazy"/>
+                  <span class="special-card-body"><span class="special-card-title">暗転ローテーション</span><span class="special-card-sub">頭の中でくるっと回転！</span><span class="special-card-badge">🧠 空間記憶に挑戦</span></span><span class="special-arrow" aria-hidden="true">›</span>
+                </button>
+                <button type="button" class="special-card special-card--purple" aria-label="1バック計算リレーを選ぶ" onclick="openSpecialChoice('backCalc')">
+                  <img src="assets/backCalc.webp" class="special-art" alt="" loading="lazy"/>
+                  <span class="special-card-body"><span class="special-card-title">1バック計算リレー</span><span class="special-card-sub">前の答えを覚えてつなごう！</span><span class="special-card-badge">🔢 記憶と計算に挑戦</span></span><span class="special-arrow" aria-hidden="true">›</span>
+                </button>
+              </section>
             </div>
+            <nav id="gamePager" aria-label="ゲーム一覧ページの切り替え">
+              <button type="button" class="game-page-arrow" id="gamePagePrev" onclick="changeGamePage(-1)" aria-label="前のゲーム一覧へ">◀ 前へ</button>
+              <div class="game-page-dots" role="group" aria-label="ページ">
+                <button type="button" class="game-page-dot" onclick="setGamePage(1)" aria-label="1ページ目・ゲーム1から4">1</button>
+                <button type="button" class="game-page-dot" onclick="setGamePage(2)" aria-label="2ページ目・ゲーム5から8">2</button>
+                <button type="button" class="game-page-dot" onclick="setGamePage(3)" aria-label="3ページ目・ゲーム9から10">3</button>
+                <button type="button" class="game-page-dot" onclick="setGamePage(4)" aria-label="4ページ目・スペシャルチャレンジ">★</button>
+              </div>
+              <button type="button" class="game-page-arrow" id="gamePageNext" onclick="changeGamePage(1)" aria-label="次のゲーム一覧へ">次へ ▶</button>
+            </nav>
+            <p id="gamePageHelp" class="game-page-help" aria-live="polite">1 / 4　まずはこの4ゲームから</p>
+        </section>
+
+
+        <!-- 新しいスペシャル2種にだけ付く、練習/通常モード選択 -->
+        <section id="specialModeScreen" class="hidden w-full flex-col bg-white/95 border-2 border-emerald-200 rounded-3xl p-4 shadow-xl overflow-y-auto max-h-[86vh]" aria-labelledby="specialChoiceTitle">
+          <button type="button" onclick="returnToHome()" class="special-back">← ゲーム一覧に戻る</button>
+          <div class="special-choice-top">
+            <img id="specialChoiceArt" src="assets/rotation.webp" alt="" />
+            <div><span class="special-kicker">🏆 フクロウからの挑戦状！</span><h2 id="specialChoiceTitle">暗転ローテーション</h2><p id="specialChoiceDesc">遊び方</p></div>
+          </div>
+          <div class="special-help" id="specialChoiceHelp"></div>
+          <button type="button" class="special-action special-action--practice" onclick="beginSpecialGame('practice')">🌱 練習モードで試す <small>時間制限なし・答えるまで挑戦できる</small></button>
+          <button type="button" class="special-action special-action--normal" onclick="beginSpecialGame('normal')">🏆 通常モードに挑戦 <small>全5問・時間制限あり・成績を表示</small></button>
+          <p id="specialBest" class="special-best" aria-live="polite"></p>
         </section>
 
         <!-- 2. ゲームプレイ画面（機種によって縦幅にゆとりを持ち、上下スクロール可能に） -->
@@ -1993,7 +2289,7 @@
                     </div>
                     <div class="flex items-baseline space-x-1">
                         <span id="brainAgeNumber" class="text-3xl font-black text-rose-600 leading-none">42</span>
-                        <span class="text-xs font-black text-rose-900">ポイント</span>
+                        <span class="text-xs font-black text-rose-900">おつかれさま！</span>
                     </div>
                 </div>
             </div>
@@ -2096,6 +2392,19 @@
         </div>
     </div>
 
+
+    <!-- PWA: ホーム画面追加の案内（iOSではSafariの手順を表示） -->
+    <div id="installHelp" class="install-overlay" hidden role="presentation" onclick="if(event.target===this) closeInstallHelp()">
+      <section class="install-sheet" role="dialog" aria-modal="true" aria-labelledby="installHelpTitle" aria-describedby="installHelpText">
+        <button type="button" class="install-close-x" onclick="closeInstallHelp()" aria-label="閉じる">×</button>
+        <h2 id="installHelpTitle">📲 ホーム画面に追加</h2>
+        <p id="installHelpText">よく遊ぶときは、ホーム画面に置いておくと便利です。</p>
+        <div id="installSteps"></div>
+        <p class="install-note">ログイン・アカウント登録は不要です。遊んだ記録は、この端末のブラウザ内に保存します。端末やブラウザが変わると引き継がれません。</p>
+        <button type="button" class="install-done" onclick="closeInstallHelp()">閉じる</button>
+      </section>
+    </div>
+
     <!-- JavaScript ロジック -->
     <script>
         /* ==========================================
@@ -2148,13 +2457,13 @@
                 badge.textContent = displayName;
                 badge.className = "bg-sky-200 text-sky-900 text-[12px] px-1.5 py-0.2 rounded-full border border-sky-400 font-extrabold truncate max-w-[100px]";
                 subtitle.textContent = `${displayName}、今日も楽しく脳活！`;
-                bannerText.textContent = `${displayName}の脳活スタート（ランダムゲーム）`;
+                bannerText.textContent = `おまかせで遊ぶ`;
                 if (stampSub) stampSub.textContent = `${displayName}のまいにちの記録です！`;
             } else {
                 badge.textContent = 'ゲスト様';
                 badge.className = "bg-amber-200 text-amber-900 text-[12px] px-1.5 py-0.2 rounded-full border border-amber-400 font-extrabold truncate max-w-[90px]";
                 subtitle.textContent = 'フクロウといっしょに楽しくチャレンジ！';
-                bannerText.textContent = '今日のおすすめを遊ぶ';
+                bannerText.textContent = 'おまかせで遊ぶ';
                 if (stampSub) stampSub.textContent = '1日1回運動してスタンプを集めよう！';
             }
         }
@@ -2431,7 +2740,7 @@
         function setDifficulty(level) {
             playSound('select');
             currentDifficulty = level;
-            document.getElementById('currentDiffLabel').textContent = `設定：${difficultyConfig[level].name}`;
+            document.getElementById('currentDiffLabel').textContent = `${difficultyConfig[level].name}`;
             ['slow', 'normal', 'fast'].forEach(l => {
                 const btn = document.getElementById(`diff-${l}`);
                 if (l === level) {
@@ -2442,8 +2751,44 @@
             });
         }
 
+
+        // v1.6.1: 12ゲームを4ページで切り替えるページ送り
+        let currentGamePage = 1;
+        const gamePageHelpTexts = {
+          1: '1 / 4　ゲーム 1〜4',
+          2: '2 / 4　ゲーム 5〜8',
+          3: '3 / 4　ゲーム 9〜10　次は挑戦状！',
+          4: '4 / 4　🏆 フクロウからの挑戦状！'
+        };
+        function setGamePage(page) {
+            currentGamePage = Math.max(1,Math.min(4,Number(page)||1));
+            const cards = document.querySelectorAll('#gameCardGrid > button.game-menu-card');
+            cards.forEach((card,index) => { card.hidden = Math.floor(index / 4) + 1 !== currentGamePage; });
+            const special = document.querySelector('#gameCardScroll .special-section');
+            if (special) special.hidden = currentGamePage !== 4;
+            document.querySelectorAll('#gamePager .game-page-dot').forEach((button,index) => {
+                if (index+1 === currentGamePage) button.setAttribute('aria-current','page');
+                else button.removeAttribute('aria-current');
+            });
+            const prev = document.getElementById('gamePagePrev');
+            const next = document.getElementById('gamePageNext');
+            if (prev) prev.disabled = currentGamePage === 1;
+            if (next) next.disabled = currentGamePage === 4;
+            const hint = document.getElementById('gamePageHelp');
+            if (hint) hint.textContent = gamePageHelpTexts[currentGamePage];
+        }
+        function changeGamePage(delta) {
+            if ((currentGamePage + delta) < 1 || (currentGamePage + delta) > 4) return;
+            playSound('select');
+            setGamePage(currentGamePage + delta);
+        }
+        // DOMはページ末尾で読まれるので、初期画面を非表示カード込みで整える
+        setGamePage(1);
+
         function showScreen(screenId) {
-            ['homeScreen', 'gameScreen', 'resultScreen'].forEach(id => {
+            // ホーム画面はページ送りを使い、小さな端末のみ縦スクロールを許可する
+            document.body.classList.toggle('home-mode', screenId === 'homeScreen');
+            ['homeScreen', 'specialModeScreen', 'gameScreen', 'resultScreen'].forEach(id => {
                 const el = document.getElementById(id);
                 if (id === screenId) {
                     el.classList.remove('hidden');
@@ -2483,7 +2828,8 @@
 
         function retryGame() {
             playSound('select');
-            if (currentMode) startGame(currentMode);
+            if (currentMode === 'rotation' || currentMode === 'backCalc') beginSpecialGame(specialPlayMode);
+            else if (currentMode) startGame(currentMode);
         }
 
         function quickStartRandomGame() {
@@ -2516,6 +2862,8 @@
             else if (mode === 'nameOrder') initNameOrderGame();
             else if (mode === 'stroop') initStroopGame();
             else if (mode === 'oddOne') initOddOneGame();
+            else if (mode === 'rotation') initRotationGame();
+            else if (mode === 'backCalc') initBackCalcGame();
         }
 
         /* ==========================================
@@ -3787,6 +4135,208 @@
             showResultScreen('🔍', 'なかまはずれ探し 終了！', `正解数`, `${oddScore} 問正解`, comment, points);
         }
 
+
+        /* ==========================================
+          v1.5 フクロウからの挑戦状（2ゲームのみ練習モード）
+          - 実際の成績は端末内だけに保存します
+          - 回転と1バック計算は認知機能・脳年齢の医療的測定ではありません
+        ========================================== */
+        let specialPlayMode = 'normal';
+        let specialRound = 0;
+        let specialCorrectCount = 0;
+        let specialLocked = false;
+        let specialRotation = null;
+        let specialBack = null;
+        const SPECIAL_TOTAL = {practice:3, normal:5};
+        const SPECIAL_INFO = {
+            rotation:{title:'暗転ローテーション', desc:'頭の中でくるっと回転！',image:'assets/rotation.webp', help:'光るマスの配置を覚えましょう。画面が切り替わったら、指示された向きに回転した配置を4つの中から選びます。練習では覚え終わったら自分で進めます。'},
+            backCalc:{title:'1バック計算リレー', desc:'前の答えを覚えてつなごう！',image:'assets/backCalc.webp',help:'はじめの計算式の答えを覚えましょう。次の式が出ても、押すのは「ひとつ前の式の答え」です。今見えている式の答えは、さらに次の問題で使います。練習は時間制限なしです。'}
+        };
+        function openSpecialChoice(mode) {
+            if (!SPECIAL_INFO[mode]) return;
+            isPlaying = false;
+            clearAllTimers();
+            currentMode = mode;
+            const info = SPECIAL_INFO[mode];
+            document.getElementById('specialChoiceTitle').textContent = info.title;
+            document.getElementById('specialChoiceDesc').textContent = info.desc;
+            document.getElementById('specialChoiceArt').src = info.image;
+            document.getElementById('specialChoiceHelp').textContent = info.help;
+            let best = null;
+            try {const saved = localStorage.getItem('special-best-v1-' + mode); if (saved !== null) best = Number(saved);} catch (_) {}
+            document.getElementById('specialBest').textContent = best !== null && Number.isFinite(best) ? `🏅 通常モードの自己ベスト：${best} / 5問` : '気軽に練習から始められるよ！';
+            showScreen('specialModeScreen');
+        }
+        function beginSpecialGame(mode) {
+            if (!SPECIAL_INFO[currentMode]) return;
+            specialPlayMode = mode === 'practice' ? 'practice' : 'normal';
+            specialRound = 0; specialCorrectCount = 0; specialLocked = false;
+            startGame(currentMode);
+        }
+        function specialSetStatus(instruction) {
+            document.getElementById('statusLabel').textContent = specialPlayMode === 'practice' ? '練習モード' : '通常モード';
+            document.getElementById('statusValue').textContent = `${Math.min(specialRound+1, SPECIAL_TOTAL[specialPlayMode])} / ${SPECIAL_TOTAL[specialPlayMode]}問`;
+            document.getElementById('scoreBox').classList.remove('hidden');
+            document.getElementById('scoreLabel').textContent = '正解数';
+            document.getElementById('scoreValue').textContent = `${specialCorrectCount}問`;
+            setMessage(instruction);
+        }
+        function specialStartAnswerTimer(callback) {
+            if (specialPlayMode !== 'normal') return;
+            if (gameTimer) { clearInterval(gameTimer); gameTimer = null; }
+            let seconds = currentDifficulty === 'fast' ? 10 : currentDifficulty === 'normal' ? 13 : 17;
+            const label = document.getElementById('statusLabel');
+            const oldLabel = label.textContent;
+            label.textContent = `残り${seconds}秒・${oldLabel}`;
+            gameTimer = setInterval(() => {
+                if (!isPlaying || !SPECIAL_INFO[currentMode]) return;
+                seconds--;
+                label.textContent = `残り${Math.max(0,seconds)}秒・通常`;
+                if (seconds <= 0) {
+                    clearInterval(gameTimer); gameTimer = null;
+                    callback();
+                }
+            },1000);
+        }
+        function specialStopAnswerTimer() {
+            if (gameTimer) {clearInterval(gameTimer);gameTimer = null;}
+        }
+        function specialNextOrFinish() {
+            specialRound++;
+            if (specialRound >= SPECIAL_TOTAL[specialPlayMode]) {finishSpecialGame();return;}
+            if (currentMode === 'rotation') rotationNextRound();
+            else backCalcNextQuestion();
+        }
+        function finishSpecialGame() {
+            if (!isPlaying) return;
+            isPlaying = false;
+            clearAllTimers();
+            const name = SPECIAL_INFO[currentMode].title;
+            const total = SPECIAL_TOTAL[specialPlayMode];
+            const practice = specialPlayMode === 'practice';
+            if (!practice) {
+                try {
+                    const key = 'special-best-v1-' + currentMode;
+                    const old = Number(localStorage.getItem(key) || 0);
+                    if (specialCorrectCount > old) localStorage.setItem(key, String(specialCorrectCount));
+                } catch (_) {}
+            }
+            playSound('fanfare');
+            showResultScreen(practice ? '🌱' : '🏆', `${name} ${practice?'練習':'挑戦'}終了！`,practice?'練習で解いた問題':'全5問の正解数',`${specialCorrectCount} / ${total}問`, practice?'練習おつかれさま！通常モードにも挑戦してみよう♪':specialCorrectCount >= 4 ? 'フクロウもびっくり！見事なチャレンジでした！':'最後まで挑戦できたね！次回の記録も楽しみ♪',Math.round(specialCorrectCount/total*100));
+        }
+        function specialShuffle(arr) {
+            const copy = [...arr];
+            for (let i=copy.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]]; }
+            return copy;
+        }
+        function specialRotateIndices(indices, steps) {
+            return indices.map(i=> {
+                let r=Math.floor(i/3), c=i%3;
+                for(let t=0;t<steps;t++){const nr=c,nc=2-r;r=nr;c=nc;}
+                return r*3+c;
+            }).sort((a,b)=>a-b);
+        }
+        function specialTilesHtml(indices) {
+            const set = new Set(indices);
+            return `<span class="rotation-grid">${Array.from({length:9},(_,i)=>`<span class="rotation-cell ${set.has(i)?'rotation-cell--lit':''}">${set.has(i)?'★':''}</span>`).join('')}</span>`;
+        }
+        function initRotationGame() {rotationNextRound();}
+        function rotationNextRound() {
+            if (!isPlaying || currentMode !== 'rotation') return;
+            specialLocked = false;
+            const n = currentDifficulty==='fast'?4:currentDifficulty==='normal'?3:2;
+            const grid = specialShuffle([0,1,2,3,4,5,6,7,8]).slice(0,n).sort((a,b)=>a-b);
+            const steps = currentDifficulty==='fast' ? [1,2,3][Math.floor(Math.random()*3)] : [1,2][Math.floor(Math.random()*2)];
+            const correct = specialRotateIndices(grid, steps);
+            const variants=[correct];const used=new Set([correct.join(',')]);
+            let guard=0;
+            while(variants.length<4 && guard++<200){
+                const wrong=specialShuffle([0,1,2,3,4,5,6,7,8]).slice(0,n).sort((a,b)=>a-b);
+                const key=wrong.join(',');
+                if (!used.has(key)) {used.add(key);variants.push(wrong);}
+            }
+            const options=specialShuffle(variants);
+            specialRotation={grid,steps,options,correctKey:correct.join(',')};
+            specialSetStatus('3×3の光るマスを覚えよう！');
+            const board = document.getElementById('gameBoard');
+            board.innerHTML=`<div class="special-board-wrap"><span class="special-mode-tag">${specialPlayMode==='practice'?'🌱 練習・時間制限なし':'🏆 通常チャレンジ'}</span><p class="special-instruction">光る★の場所を覚えよう！</p><div class="rotation-memory">${specialTilesHtml(grid)}</div><p class="special-instruction">${specialPlayMode==='practice'?'覚えたら下のボタンを押してね':'3秒後に配置が隠れます'}</p>${specialPlayMode==='practice'?'<button type="button" class="special-button" onclick="rotationAsk()">覚えた！ 問題へ →</button>':''}</div>`;
+            if (specialPlayMode==='normal') spawnTimer=runTimeout(rotationAsk,3000);
+        }
+        function rotationAsk() {
+            if (!isPlaying || currentMode!=='rotation' || !specialRotation || specialLocked) return;
+            if (spawnTimer) {clearTimeout(spawnTimer);spawnTimer=null;}
+            const s=specialRotation;
+            const angle=s.steps*90;
+            specialSetStatus(`右（時計回り）に${angle}度回した配置はどれ？`);
+            const board=document.getElementById('gameBoard');
+            board.innerHTML=`<div class="special-board-wrap"><p class="special-instruction">↻ 時計回りに ${angle}° 回転したのはどれ？</p><div class="rotation-choices">${s.options.map((option,i)=>`<button type="button" class="rotation-choice" onclick="rotationAnswer(${i})"><span class="rotation-label">${i+1} 番</span>${specialTilesHtml(option)}</button>`).join('')}</div><p class="text-xs font-bold text-gray-600">${specialPlayMode==='practice'?'時間制限はないよ。落ち着いて考えよう！':'制限時間内に1つ選ぼう！'}</p></div>`;
+            specialStartAnswerTimer(()=>rotationAnswer(-1));
+        }
+        function rotationAnswer(choice) {
+            if(!isPlaying||currentMode!=='rotation'||specialLocked||!specialRotation)return;
+            const correct=choice>=0 && specialRotation.options[choice].join(',')===specialRotation.correctKey;
+            if (specialPlayMode==='practice' && !correct) {
+                playSound('bad');setMessage('もう一度！回転する方向をよく確かめよう');return;
+            }
+            specialLocked=true;specialStopAnswerTimer();
+            document.querySelectorAll('.rotation-choice').forEach(b=>b.disabled=true);
+            if (correct){specialCorrectCount++;playSound('good');setMessage('⭕ 正解！頭の中でうまく回せたね！');}
+            else{playSound('bad');setMessage('⏰ / ❌ 次の問題でチャレンジしよう！');}
+            document.getElementById('scoreValue').textContent=`${specialCorrectCount}問`;
+            spawnTimer=runTimeout(specialNextOrFinish,900);
+        }
+        function specialMakeFormula(exclude=null) {
+            const max = currentDifficulty==='fast'?45:currentDifficulty==='normal'?25:15;
+            for(let i=0;i<100;i++){
+                const x=2+Math.floor(Math.random()*max);
+                const y=1+Math.floor(Math.random()*Math.max(5,Math.floor(max*.55)));
+                const plus=Math.random()<.55;
+                const a=plus?x+y:Math.max(x,y)-Math.min(x,y);
+                if (a!==exclude) return {label:plus?`${x} + ${y}`:`${Math.max(x,y)} − ${Math.min(x,y)}`, answer:a};
+            }
+            return {label:'9 + 7',answer:16};
+        }
+        function initBackCalcGame() {
+            const first=specialMakeFormula();
+            specialBack={previous:first,pending:null,options:[]};
+            specialLocked=false;
+            specialSetStatus('最初の式を計算して、答えを覚えよう！');
+            document.getElementById('gameBoard').innerHTML=`<div class="special-board-wrap"><span class="special-mode-tag">${specialPlayMode==='practice'?'🌱 練習・時間制限なし':'🏆 通常チャレンジ'}</span><p class="special-instruction">この式の答えを覚えてね</p><div class="special-focus-formula">${first.label} ＝ ？</div><p class="special-instruction">${specialPlayMode==='practice'?'覚えたら次へ進もう':'3秒後に次の式が出るよ'}</p>${specialPlayMode==='practice'?'<button type="button" class="special-button" onclick="backCalcNextQuestion()">覚えた！ 次へ →</button>':''}</div>`;
+            if(specialPlayMode==='normal')spawnTimer=runTimeout(backCalcNextQuestion,3000);
+        }
+        function backCalcNextQuestion() {
+            if (!isPlaying || currentMode!=='backCalc' || specialLocked) return;
+            if (spawnTimer) {clearTimeout(spawnTimer);spawnTimer=null;}
+            const prev=specialBack.previous;
+            const current=specialMakeFormula(prev.answer);
+            const opts=new Set([prev.answer,current.answer]);
+            while(opts.size<4){const offset=Math.floor(Math.random()*15)-7;const n=prev.answer+offset;if(n>=0)opts.add(n);}
+            const options=specialShuffle([...opts]);
+            specialBack.pending=current;
+            specialBack.options=options;
+            specialSetStatus('今の式を計算しつつ、ひとつ前の答えを選ぼう！');
+            const board=document.getElementById('gameBoard');
+            board.innerHTML=`<div class="special-board-wrap"><p class="special-instruction">押すのは「1つ前の式」の答え！</p><div class="special-focus-formula">${current.label} ＝ ？</div><p class="text-xs font-bold text-indigo-700">※ 今の式の答えは次に使うよ</p><div class="special-answer-grid">${options.map((v,i)=>`<button type="button" class="special-answer" onclick="backCalcAnswer(${i})">${v}</button>`).join('')}</div></div>`;
+            specialStartAnswerTimer(()=>backCalcAnswer(-1));
+        }
+        function backCalcAnswer(index) {
+            if (!isPlaying || currentMode!=='backCalc' || specialLocked || !specialBack?.pending) return;
+            const right=index>=0 && specialBack.options[index]===specialBack.previous.answer;
+            if (specialPlayMode==='practice' && !right){playSound('bad');setMessage('前に出た式の答えを思い出してみよう！');return;}
+            specialLocked=true;specialStopAnswerTimer();
+            document.querySelectorAll('.special-answer').forEach(b=>b.disabled=true);
+            if(right){specialCorrectCount++;playSound('good');setMessage('⭕ 正解！前の答えを覚えていたね！');}
+            else{playSound('bad');setMessage(`答えは ${specialBack.previous.answer}。次の問題に進もう！`);}
+            document.getElementById('scoreValue').textContent=`${specialCorrectCount}問`;
+            // 新しい式を次の記憶対象にする。
+            specialBack.previous=specialBack.pending;
+            specialBack.pending=null;
+            specialLocked=false;
+            // タイムアウトなどの多重実行を避けるため、入力をロックする。
+            specialLocked=true;
+            spawnTimer=runTimeout(()=>{ specialLocked=false;specialNextOrFinish();},1000);
+        }
+
         /* ==========================================
            チャレンジポイント計算ロジック
         ========================================== */
@@ -3806,7 +4356,7 @@
             document.getElementById('resultScoreLabel').textContent = label;
             document.getElementById('resultScoreValue').textContent = scoreText;
             document.getElementById('resultComment').textContent = comment;
-            document.getElementById('brainAgeNumber').textContent = '🎉';
+            document.getElementById('brainAgeNumber').textContent = '🦉';
 
             const greetingEl = document.getElementById('resultUserGreeting');
             const ageDiffBadge = document.getElementById('resultAgeDiffBadge');
@@ -3818,7 +4368,12 @@
                 greetingEl.textContent = '本日のチャレンジ';
             }
 
-            ageDiffBadge.classList.add('hidden');
+            if (Number.isFinite(userProfile.age) && userProfile.age > 0) {
+                ageDiffBadge.classList.remove('hidden');
+                ageDiffBadge.textContent = `あなたの年齢：${userProfile.age}歳`;
+            } else {
+                ageDiffBadge.classList.add('hidden');
+            }
 
             showScreen('resultScreen');
         }
@@ -3841,6 +4396,78 @@
             } catch (_) {}
             initUserProfile();
         };
+    </script>
+
+    <script id="install-handler-v160">
+      // GitHub Pagesでも動くホーム画面追加。iPhoneはブラウザから直接起動できないので案内する。
+      let deferredHomeInstallPrompt = null;
+      let installPreviousFocus = null;
+      const isStandaloneApp = () => window.matchMedia('(display-mode: standalone)').matches || Boolean(window.navigator.standalone);
+      const refreshHomeInstallBtn = () => {
+        const btn=document.getElementById('homeInstallBtn');
+        if (btn) btn.hidden=isStandaloneApp();
+      };
+      window.addEventListener('beforeinstallprompt', event => {
+        event.preventDefault();
+        deferredHomeInstallPrompt=event;
+        refreshHomeInstallBtn();
+      });
+      window.addEventListener('appinstalled', () => {
+        deferredHomeInstallPrompt=null;
+        closeInstallHelp();
+        refreshHomeInstallBtn();
+      });
+      function showInstallHelp() {
+        const ua=navigator.userAgent || '';
+        const isiOS=/iPad|iPhone|iPod/.test(ua) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
+        const isAndroid=/Android/.test(ua);
+        const steps=document.getElementById('installSteps');
+        if (isiOS) {
+          steps.innerHTML='<p><strong>iPhone・iPadの場合</strong></p><ol><li>このページを<strong>Safari</strong>で開きます。</li><li>Safariの <strong>共有（□↑）</strong> をタップします。共有が見つからないときは、ページメニューから「共有」を選びます。</li><li><strong>「ホーム画面に追加」</strong>を選びます。</li><li>必要なら「Webアプリとして開く」をオンにして、<strong>「追加」</strong>を押します。</li></ol>';
+        } else if (isAndroid) {
+          steps.innerHTML='<p><strong>Androidの場合</strong></p><ol><li>このページを<strong>Chrome</strong>で開きます。</li><li>右上の <strong>︙（メニュー）</strong> をタップします。</li><li><strong>「アプリをインストール」</strong>または<strong>「ホーム画面に追加」</strong>を選びます。</li><li>画面に沿って追加します。</li></ol>';
+        } else {
+          steps.innerHTML='<p><strong>パソコンの場合</strong></p><ol><li>ChromeまたはEdgeで開きます。</li><li>アドレスバー内の<strong>インストールアイコン</strong>、またはブラウザメニューからインストールを選びます。</li></ol><p>スマホでホーム画面に追加する場合は、そのスマホで公開URLを開いてね。</p>';
+        }
+        installPreviousFocus=document.activeElement;
+        const dialog=document.getElementById('installHelp');
+        dialog.hidden=false;
+        dialog.querySelector('.install-close-x')?.focus();
+      }
+      function closeInstallHelp() {
+        const dialog=document.getElementById('installHelp');
+        if (dialog) dialog.hidden=true;
+        if(installPreviousFocus?.focus) installPreviousFocus.focus();
+        installPreviousFocus=null;
+      }
+      async function handleInstallClick() {
+        if (isStandaloneApp()) return;
+        if (deferredHomeInstallPrompt) {
+          const prompt=deferredHomeInstallPrompt;
+          deferredHomeInstallPrompt=null;
+          try {
+            // この呼び出しはユーザーのクリックから直接開始すること。
+            await prompt.prompt();
+            await prompt.userChoice;
+            refreshHomeInstallBtn();
+          } catch (_) { showInstallHelp(); }
+        } else { showInstallHelp(); }
+      }
+      document.addEventListener('keydown', event => {
+        if (event.key==='Escape' && !document.getElementById('installHelp').hidden) closeInstallHelp();
+        if (event.key==='Tab') {
+          const dialog=document.getElementById('installHelp');
+          if (dialog.hidden) return;
+          const controls=[...dialog.querySelectorAll('button:not([disabled])')];
+          if (!controls.length) return;
+          if (event.shiftKey && document.activeElement===controls[0]) {event.preventDefault();controls.at(-1).focus();}
+          else if (!event.shiftKey && document.activeElement===controls.at(-1)) {event.preventDefault();controls[0].focus();}
+        }
+      });
+      refreshHomeInstallBtn();
+      if ('serviceWorker' in navigator && (location.protocol==='https:' || location.hostname==='localhost' || location.hostname==='127.0.0.1')) {
+        window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js', {scope:'./'}).catch(() => {}));
+      }
     </script>
 </body>
 </html>

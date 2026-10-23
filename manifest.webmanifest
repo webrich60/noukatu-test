@@ -1,0 +1,26 @@
+{
+  "name": "やさしい脳活日和（12ゲーム・テスト版）",
+  "short_name": "脳活日和",
+  "description": "フクロウと楽しむ12種類の脳活ゲーム。ログイン不要のテスト版。",
+  "id": "./index.html",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f8f5e9",
+  "theme_color": "#eaf7f1",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "./assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
