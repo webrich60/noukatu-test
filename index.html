@@ -10,7 +10,7 @@
     <link rel="manifest" href="./manifest.webmanifest">
     <link rel="icon" type="image/png" sizes="192x192" href="./assets/icons/icon-192.png">
     <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png">
-    <title>やさしい脳活日和｜12の脳活ゲーム・テスト版 v1.6.1</title>
+    <title>やさしい脳活日和｜12の脳活ゲーム・テスト版 v1.6.3</title>
     <!-- Tailwind utilities: local CSS embedded for offline-safe static hosting -->
     <style id="tailwind-local-utilities">
 /*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
@@ -1759,6 +1759,7 @@
   .usage-accordion[open] .usage-arrow {transform:rotate(180deg);}
   .usage-accordion .usage-panel {padding:1px 14px 13px 14px;border-top:1px dashed #a6d5be;background:#f7fdf9;animation:usageDoorOpen .24s ease-out;}
   .usage-accordion .usage-panel p {color:#254b3e;font-size:13px;line-height:1.7;font-weight:700;margin:11px 0 0;}
+  .usage-accordion .usage-panel .usage-age-note {font-size:12px;line-height:1.6;font-weight:500;color:#375a4f;margin-top:10px;padding-top:9px;border-top:1px solid #cfe6d9;}
   @keyframes usageDoorOpen {from{opacity:0;transform:translateY(-9px)}to{opacity:1;transform:translateY(0)}}
   @media(prefers-reduced-motion:reduce){.usage-accordion .usage-door,.usage-accordion .usage-arrow{transition:none}.usage-accordion .usage-panel{animation:none}}
 
@@ -1967,7 +1968,17 @@
 </style>
 
 <style id="simple-pager-v161">
-/* v1.6.1: 長いカード一覧のスクロールをやめ、4ページに切り替える。 */
+/* v1.6.3: 12ゲーム共通の「お楽しみ脳活年齢」結果パネル */
+.result-fun-age-card {display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;}
+.result-fun-age-eyebrow {font-weight:800;font-size:12px;line-height:1.45;color:#965009;}
+.result-fun-age-question {font-weight:900;font-size:clamp(18px,4.8vw,24px);line-height:1.4;color:#532c0e;text-align:center;}
+.result-fun-age-metric {display:flex;align-items:baseline;justify-content:center;gap:5px;margin:3px auto;color:#c2410c;}
+.result-fun-age-number {font-weight:950;font-size:clamp(52px,13vw,70px);letter-spacing:-2px;font-variant-numeric:tabular-nums;line-height:1.05;}
+.result-fun-age-unit {font-weight:950;font-size:clamp(23px,6vw,32px);}
+.result-fun-age-category {font-weight:900;color:#26594d;font-size:14px;line-height:1.45;}
+.result-fun-age-notice {font-size:11px;line-height:1.55;font-weight:700;color:#52525b;text-align:left;margin-top:5px;max-width:320px;}
+@media(max-width:360px) {.result-fun-age-question{font-size:17px}.result-fun-age-number{font-size:49px}.result-fun-age-notice{font-size:10px}}
+/* v1.6.3: 長いカード一覧のスクロールをやめ、4ゲームずつ切り替える。 */
 body.home-mode {
   height:auto !important; min-height:100dvh !important;
   overflow-x:hidden !important; overflow-y:auto !important;
@@ -2012,8 +2023,8 @@ body.home-mode #homeScreen {height:auto !important;min-height:0 !important;max-h
 @media (max-width:380px) {
   #gamePager {gap:4px;}
   .game-page-arrow {font-size:12px;padding:6px 7px;}
-  .game-page-dot {min-width:33px;padding-left:5px;padding-right:5px;}
-  .game-page-dots {gap:3px;}
+  .game-page-dot {min-width:35px;}
+  .game-page-dots {gap:4px;}
 }
 @media (max-height:700px) and (max-width:619px) {
   #homeScreen > button:first-of-type {min-height:44px !important;margin-bottom:9px !important;padding:8px !important;}
@@ -2106,6 +2117,7 @@ body.home-mode #homeScreen {height:auto !important;min-height:0 !important;max-h
                 <div class="usage-panel">
                     <p>🔊 正解・不正解時に効果音が鳴ります。画面右上の 🔊 で切り替えられます。音量は端末でも調整できます。</p>
                     <p>🔒 ログイン不要・成績の外部送信はありません。ニックネーム・年齢は任意で、入力した場合はこの端末のブラウザに保存されます。</p>
+                    <p class="usage-age-note">※ 🧠「脳活年齢」は、反応・判断・記憶などを使うゲームの成績から計算した<strong>お楽しみ用の目安</strong>です。現時点では年齢別の研究データによって検証された数値ではなく、実際の脳の年齢や認知機能の状態を示すものではありません。</p>
                 </div>
             </details>
             <!-- ③ メニュー見出し -->
@@ -2119,7 +2131,7 @@ body.home-mode #homeScreen {height:auto !important;min-height:0 !important;max-h
                 <span class="text-[12px] text-amber-800 font-bold">ページを選ぶ</span>
             </div>
 
-            <!-- ④ 通常ゲーム3ページ・挑戦ゲーム1ページ。長い縦スクロールは不要。 -->
+            <!-- ④ 4ゲームずつ3ページで表示。長い縦スクロールは不要。 -->
             <div id="gameCardScroll" class="game-list-scroll" role="region" aria-label="12種類の脳活ゲームをページ切り替えで選べます">
               <div id="gameCardGrid" class="grid grid-cols-2 gap-2.5">
                 
@@ -2219,12 +2231,11 @@ body.home-mode #homeScreen {height:auto !important;min-height:0 !important;max-h
               <div class="game-page-dots" role="group" aria-label="ページ">
                 <button type="button" class="game-page-dot" onclick="setGamePage(1)" aria-label="1ページ目・ゲーム1から4">1</button>
                 <button type="button" class="game-page-dot" onclick="setGamePage(2)" aria-label="2ページ目・ゲーム5から8">2</button>
-                <button type="button" class="game-page-dot" onclick="setGamePage(3)" aria-label="3ページ目・ゲーム9から10">3</button>
-                <button type="button" class="game-page-dot" onclick="setGamePage(4)" aria-label="4ページ目・スペシャルチャレンジ">★</button>
+                <button type="button" class="game-page-dot" onclick="setGamePage(3)" aria-label="3ページ目・ゲーム9から12">3</button>
               </div>
               <button type="button" class="game-page-arrow" id="gamePageNext" onclick="changeGamePage(1)" aria-label="次のゲーム一覧へ">次へ ▶</button>
             </nav>
-            <p id="gamePageHelp" class="game-page-help" aria-live="polite">1 / 4　まずはこの4ゲームから</p>
+            <p id="gamePageHelp" class="game-page-help" aria-live="polite">1 / 3　まずはこの4ゲームから</p>
         </section>
 
 
@@ -2280,17 +2291,16 @@ body.home-mode #homeScreen {height:auto !important;min-height:0 !important;max-h
                 <h2 class="text-sm sm:text-base font-black text-amber-900" id="resultTitle">おつかれさまでした！</h2>
             </div>
             
-            <!-- ゲームの達成カード（医学的な年齢推定表示は行わない） -->
-            <div class="bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 p-0.5 rounded-2xl w-full max-w-sm shadow-md mb-2.5">
-                <div class="bg-white rounded-[14px] p-2.5 flex items-center justify-around">
-                    <div class="text-left">
-                        <span class="text-[12px] font-black text-amber-800 block" id="resultUserGreeting">本日のチャレンジ</span>
-                        <span class="text-xs font-black text-amber-950">🦉 今日もよくがんばりました！</span>
+            <!-- ゲーム内スコアによる、お楽しみ用の脳活年齢（医学的な評価ではない） -->
+            <div class="bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 p-0.5 rounded-2xl w-full max-w-sm shadow-md mb-2.5" aria-live="polite" aria-label="今回のお楽しみ脳活年齢">
+                <div class="result-fun-age-card bg-white rounded-[14px] p-3">
+                    <span class="result-fun-age-eyebrow" id="resultUserGreeting">本日のチャレンジ</span>
+                    <div class="result-fun-age-question">🧠 あなたの脳活年齢は？</div>
+                    <div class="result-fun-age-metric">
+                        <span id="brainAgeNumber" class="result-fun-age-number">--</span><span class="result-fun-age-unit">歳！</span>
                     </div>
-                    <div class="flex items-baseline space-x-1">
-                        <span id="brainAgeNumber" class="text-3xl font-black text-rose-600 leading-none">42</span>
-                        <span class="text-xs font-black text-rose-900">おつかれさま！</span>
-                    </div>
+                    <div class="result-fun-age-category" id="resultBrainAgeCategory">今回のゲームの結果</div>
+                    <p class="result-fun-age-notice">※ゲームの得点から計算した、お楽しみの目安です。実際の脳年齢や認知機能を測定するものではありません。</p>
                 </div>
             </div>
 
@@ -2752,20 +2762,19 @@ body.home-mode #homeScreen {height:auto !important;min-height:0 !important;max-h
         }
 
 
-        // v1.6.1: 12ゲームを4ページで切り替えるページ送り
+        // v1.6.3: 12ゲームを4つずつ切り替えるページ送り
         let currentGamePage = 1;
         const gamePageHelpTexts = {
-          1: '1 / 4　ゲーム 1〜4',
-          2: '2 / 4　ゲーム 5〜8',
-          3: '3 / 4　ゲーム 9〜10　次は挑戦状！',
-          4: '4 / 4　🏆 フクロウからの挑戦状！'
+          1: '1 / 3　ゲーム 1〜4',
+          2: '2 / 3　ゲーム 5〜8',
+          3: '3 / 3　ゲーム 9〜12・フクロウからの挑戦状'
         };
         function setGamePage(page) {
-            currentGamePage = Math.max(1,Math.min(4,Number(page)||1));
+            currentGamePage = Math.max(1,Math.min(3,Number(page)||1));
             const cards = document.querySelectorAll('#gameCardGrid > button.game-menu-card');
             cards.forEach((card,index) => { card.hidden = Math.floor(index / 4) + 1 !== currentGamePage; });
             const special = document.querySelector('#gameCardScroll .special-section');
-            if (special) special.hidden = currentGamePage !== 4;
+            if (special) special.hidden = currentGamePage !== 3;
             document.querySelectorAll('#gamePager .game-page-dot').forEach((button,index) => {
                 if (index+1 === currentGamePage) button.setAttribute('aria-current','page');
                 else button.removeAttribute('aria-current');
@@ -2773,12 +2782,12 @@ body.home-mode #homeScreen {height:auto !important;min-height:0 !important;max-h
             const prev = document.getElementById('gamePagePrev');
             const next = document.getElementById('gamePageNext');
             if (prev) prev.disabled = currentGamePage === 1;
-            if (next) next.disabled = currentGamePage === 4;
+            if (next) next.disabled = currentGamePage === 3;
             const hint = document.getElementById('gamePageHelp');
             if (hint) hint.textContent = gamePageHelpTexts[currentGamePage];
         }
         function changeGamePage(delta) {
-            if ((currentGamePage + delta) < 1 || (currentGamePage + delta) > 4) return;
+            if ((currentGamePage + delta) < 1 || (currentGamePage + delta) > 3) return;
             playSound('select');
             setGamePage(currentGamePage + delta);
         }
@@ -4348,6 +4357,29 @@ body.home-mode #homeScreen {height:auto !important;min-height:0 !important;max-h
         }
 
         /* ==========================================
+           お楽しみ脳活年齢（科学的・医学的推定ではない）
+           各ゲームの遊びのスコア0〜100を25〜75歳へ換算。
+           実年齢・認知症リスク・医療的な脳年齢との関係はない。
+        ========================================== */
+        const FUN_AGE_CATEGORY = {
+            whack:'笑顔タッチ・反応と判断',
+            signal:'信号キャッチ・反応スピード',
+            numbers:'数字順番タッチ・注意と探索',
+            calc:'スピード計算・暗算',
+            invader:'宇宙パトロール・目と手の連携',
+            memory:'神経衰弱・カード記憶',
+            janken:'後出しジャンケン・判断の切り替え',
+            nameOrder:'名前の順番記憶',
+            stroop:'色当てテスト・色の判断',
+            oddOne:'なかまはずれ・観察と分類',
+            rotation:'暗転ローテーション・空間記憶',
+            backCalc:'1バック計算リレー・記憶と計算'
+        };
+        function calculateFunBrainAge(challengePoints) {
+            const points = Number.isFinite(Number(challengePoints)) ? Math.min(100, Math.max(0, Number(challengePoints))) : 0;
+            return Math.round(75 - points * 0.5);
+        }
+        /* ==========================================
            結果画面表示
         ========================================== */
         function showResultScreen(emoji, title, label, scoreText, comment, challengePoints = 0) {
@@ -4356,7 +4388,11 @@ body.home-mode #homeScreen {height:auto !important;min-height:0 !important;max-h
             document.getElementById('resultScoreLabel').textContent = label;
             document.getElementById('resultScoreValue').textContent = scoreText;
             document.getElementById('resultComment').textContent = comment;
-            document.getElementById('brainAgeNumber').textContent = '🦉';
+            // 全12ゲームの終了時に毎回ゲームスコア由来の仮想年齢を表示する。
+            document.getElementById('brainAgeNumber').textContent = String(calculateFunBrainAge(challengePoints));
+            const practicing = (currentMode === 'rotation' || currentMode === 'backCalc') && specialPlayMode === 'practice';
+            document.getElementById('resultBrainAgeCategory').textContent =
+                (FUN_AGE_CATEGORY[currentMode] || '今回のゲーム') + (practicing ? '（練習の参考）' : ' の結果');
 
             const greetingEl = document.getElementById('resultUserGreeting');
             const ageDiffBadge = document.getElementById('resultAgeDiffBadge');
