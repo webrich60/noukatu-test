@@ -10,7 +10,7 @@
     <link rel="manifest" href="./manifest.webmanifest">
     <link rel="icon" type="image/png" sizes="192x192" href="./assets/icons/icon-192.png">
     <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png">
-    <title>やさしい脳活日和｜12の脳活ゲーム・テスト版 v1.6.4</title>
+    <title>やさしい脳活日和｜12の脳活ゲーム・テスト版 v1.6.5</title>
     <!-- Tailwind utilities: local CSS embedded for offline-safe static hosting -->
     <style id="tailwind-local-utilities">
 /*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
@@ -1968,7 +1968,7 @@
 </style>
 
 <style id="simple-pager-v161">
-/* v1.6.4: 12ゲーム共通の「お楽しみ脳活年齢」結果パネル */
+/* v1.6.5: 12ゲーム共通の「お楽しみ脳活年齢」結果パネル */
 .result-fun-age-card {display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;}
 .result-fun-age-eyebrow {font-weight:800;font-size:12px;line-height:1.45;color:#965009;}
 .result-fun-age-question {font-weight:900;font-size:clamp(18px,4.8vw,24px);line-height:1.4;color:#532c0e;text-align:center;}
@@ -1978,7 +1978,7 @@
 .result-fun-age-category {font-weight:900;color:#26594d;font-size:14px;line-height:1.45;}
 .result-fun-age-notice {font-size:11px;line-height:1.55;font-weight:700;color:#52525b;text-align:left;margin-top:5px;max-width:320px;}
 @media(max-width:360px) {.result-fun-age-question{font-size:17px}.result-fun-age-number{font-size:49px}.result-fun-age-notice{font-size:10px}}
-/* v1.6.4: 長いカード一覧のスクロールをやめ、4ゲームずつ切り替える。 */
+/* v1.6.5: 長いカード一覧のスクロールをやめ、4ゲームずつ切り替える。 */
 body.home-mode {
   height:auto !important; min-height:100dvh !important;
   overflow-x:hidden !important; overflow-y:auto !important;
@@ -2050,20 +2050,57 @@ body.home-mode #homeScreen {height:auto !important;min-height:0 !important;max-h
   .app-version {font-size:10px;line-height:1.25;color:#587267;font-weight:800;letter-spacing:.025em;}
   @media (max-width:370px) {.app-version {font-size:9px;}}
 </style>
+
+<style id="header-fix-v165">
+/* v1.6.5 : フクロウ拡大・右上の小さなホーム追加ボタンを常設 */
+#mainAppHeader { position:relative; }
+#mainAppHeader .header-toprow { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; min-width:0; width:100%; }
+#mainAppHeader .header-leading { display:flex; flex:1 1 auto; min-width:0; align-items:center; gap:9px; }
+#mainAppHeader .header-owl-image {
+  width:74px; height:74px; flex:0 0 74px; object-fit:cover; object-position:0% 50%;
+  border-radius:12px; background:#eaf8f6;
+}
+#mainAppHeader .header-copy { flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:5px; }
+#mainAppHeader .header-copy h1 { font-size:14px; line-height:1.3; gap:3px 5px; min-width:0; }
+#mainAppHeader .header-subtitle { font-size:15px; font-weight:700; line-height:1.5; color:#18324d; margin:0; overflow-wrap:anywhere; }
+#mainAppHeader .app-version { font-size:10px; font-weight:800; color:#527264; letter-spacing:.02em; }
+#mainAppHeader #homeInstallBtn {
+  display:inline-flex !important; flex:0 0 auto; align-self:flex-start; align-items:center; justify-content:center;
+  padding:5px 8px; min-height:30px; border-radius:12px; border:1px solid #c4d9cc;
+  background:#f2f8f3; color:#355f50; font-size:11px; line-height:1.3; font-weight:800;
+  box-shadow:none; white-space:nowrap; cursor:pointer;
+}
+#mainAppHeader #homeInstallBtn:focus-visible {outline:3px solid #157e70;outline-offset:2px;}
+@media (max-width:385px) {
+  #mainAppHeader .header-owl-image {width:64px;height:64px;flex-basis:64px;}
+  #mainAppHeader .header-leading {gap:6px;}
+  #mainAppHeader .header-toprow {gap:5px;}
+  #mainAppHeader .header-copy h1 {font-size:12px;}
+  #mainAppHeader .header-subtitle {font-size:13px;}
+  #mainAppHeader #homeInstallBtn {font-size:10px; padding:5px 6px;}
+}
+@media (min-width:600px) {
+  #mainAppHeader .header-owl-image {width:82px;height:82px;flex-basis:82px;}
+  #mainAppHeader .header-copy h1 {font-size:16px;}
+  #mainAppHeader .header-subtitle {font-size:17px;}
+}
+</style>
 </head>
 <body id="appBody" class="home-mode w-full flex flex-col justify-between items-center p-2 sm:p-3">
 
     <!-- ヘッダーエリア -->
-    <header class="w-full max-w-lg bg-white/95 backdrop-blur-md border-2 border-emerald-200 rounded-2xl px-2.5 py-1.5 shadow-md flex justify-between items-center flex-shrink-0 mb-1">
-        <div class="flex items-center space-x-1.5">
-            <img src="assets/owl.png" alt="フクロウ" class="w-12 h-12 object-contain" />
-            <div>
-                <h1 class="text-sm sm:text-base font-black text-amber-950 leading-tight flex items-center gap-1">
-                    <span>やさしい脳活日和</span>
-                    <span id="headerUserBadge" class="bg-amber-200 text-amber-900 text-[12px] px-1.5 py-0.2 rounded-full border border-amber-400 font-extrabold truncate max-w-[90px]">ゲスト様</span>
-                </h1>
-                <p id="headerSubtitle" class="sr-only">フクロウといっしょに楽しくチャレンジ！</p>
-                <span class="app-version" id="appVersionLabel" aria-label="アプリのバージョン">テスト版 v1.6.4</span>
+    <header id="mainAppHeader" class="w-full max-w-lg bg-white/95 backdrop-blur-md border-2 border-emerald-200 rounded-2xl px-2.5 py-1.5 shadow-md flex justify-between items-center flex-shrink-0 mb-1">
+        <div class="header-toprow">
+            <div class="header-leading">
+                <img src="assets/owl.png" alt="フクロウ" class="header-owl-image" width="74" height="74" />
+                <div class="header-copy">
+                    <h1 class="text-sm sm:text-base font-black text-amber-950 leading-tight flex items-center gap-1">
+                        <span>やさしい脳活日和</span>
+                        <span id="headerUserBadge" class="bg-amber-200 text-amber-900 text-[12px] px-1.5 py-0.2 rounded-full border border-amber-400 font-extrabold truncate max-w-[90px]">ゲスト様</span>
+                    </h1>
+                    <p id="headerSubtitle" class="header-subtitle">フクロウといっしょに楽しくチャレンジ！</p>
+                    <span class="app-version" id="appVersionLabel" aria-label="アプリのバージョン">テスト版 v1.6.5</span>
+                </div>
             </div>
             <button type="button" id="homeInstallBtn" onclick="handleInstallClick()" title="インストール／ホーム画面に追加" aria-label="ホーム画面に追加する方法を見る">＋ ホームに追加</button>
         </div>
@@ -2778,7 +2815,7 @@ body.home-mode #homeScreen {height:auto !important;min-height:0 !important;max-h
         }
 
 
-        // v1.6.4: 12ゲームを4つずつ切り替えるページ送り
+        // v1.6.5: 12ゲームを4つずつ切り替えるページ送り
         let currentGamePage = 1;
         const gamePageHelpTexts = {
           1: '1 / 3　ゲーム 1〜4',
@@ -4459,7 +4496,10 @@ body.home-mode #homeScreen {height:auto !important;min-height:0 !important;max-h
       const isStandaloneApp = () => window.matchMedia('(display-mode: standalone)').matches || Boolean(window.navigator.standalone);
       const refreshHomeInstallBtn = () => {
         const btn=document.getElementById('homeInstallBtn');
-        if (btn) btn.hidden=isStandaloneApp();
+        if (btn) {
+          btn.hidden=false;
+          btn.title=isStandaloneApp() ? 'ホーム画面に追加済みです' : 'インストール／ホーム画面に追加';
+        }
       };
       window.addEventListener('beforeinstallprompt', event => {
         event.preventDefault();
@@ -4472,6 +4512,7 @@ body.home-mode #homeScreen {height:auto !important;min-height:0 !important;max-h
         refreshHomeInstallBtn();
       });
       function showInstallHelp() {
+        document.getElementById('installHelpTitle').textContent='📲 ホーム画面に追加';
         const ua=navigator.userAgent || '';
         const isiOS=/iPad|iPhone|iPod/.test(ua) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
         const isAndroid=/Android/.test(ua);
@@ -4495,7 +4536,13 @@ body.home-mode #homeScreen {height:auto !important;min-height:0 !important;max-h
         installPreviousFocus=null;
       }
       async function handleInstallClick() {
-        if (isStandaloneApp()) return;
+        if (isStandaloneApp()) {
+          showInstallHelp();
+          document.getElementById('installHelpTitle').textContent='🦉 ホーム画面に追加済みです';
+          document.getElementById('installSteps').innerHTML='<p>この画面はすでにホーム画面からアプリとして開かれています。追加操作は必要ありません。</p>';
+          return;
+        }
+        document.getElementById('installHelpTitle').textContent='📲 ホーム画面に追加';
         if (deferredHomeInstallPrompt) {
           const prompt=deferredHomeInstallPrompt;
           deferredHomeInstallPrompt=null;

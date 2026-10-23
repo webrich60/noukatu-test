@@ -1,5 +1,5 @@
-// やさしい脳活日和 v1.6.4：GitHub Pagesのサブパスに対応した静的キャッシュ
-const CACHE_NAME = 'noukatsu-test-v1.6.4';
+// やさしい脳活日和 v1.6.5：GitHub Pagesのサブパスに対応した静的キャッシュ
+const CACHE_NAME = 'noukatsu-test-v1.6.5';
 const APP_FILES = ["./", "./index.html", "./manifest.webmanifest", "./assets/owl.png", "./assets/whack.webp", "./assets/signal.webp", "./assets/numbers.webp", "./assets/calc.webp", "./assets/invader.webp", "./assets/memory.webp", "./assets/janken.webp", "./assets/nameOrder.webp", "./assets/stroop.webp", "./assets/oddOne.webp", "./assets/rotation.webp", "./assets/backCalc.webp", "./assets/icons/icon-192.png", "./assets/icons/icon-512.png", "./assets/icons/apple-touch-icon.png"];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_FILES)).then(() => self.skipWaiting()));
