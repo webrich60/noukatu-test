@@ -1,5 +1,5 @@
-// やさしい脳活日和 v1.6.3：GitHub Pagesのサブパスに対応した静的キャッシュ
-const CACHE_NAME = 'noukatsu-test-v1.6.3';
+// やさしい脳活日和 v1.6.4：GitHub Pagesのサブパスに対応した静的キャッシュ
+const CACHE_NAME = 'noukatsu-test-v1.6.4';
 const APP_FILES = ["./", "./index.html", "./manifest.webmanifest", "./assets/owl.png", "./assets/whack.webp", "./assets/signal.webp", "./assets/numbers.webp", "./assets/calc.webp", "./assets/invader.webp", "./assets/memory.webp", "./assets/janken.webp", "./assets/nameOrder.webp", "./assets/stroop.webp", "./assets/oddOne.webp", "./assets/rotation.webp", "./assets/backCalc.webp", "./assets/icons/icon-192.png", "./assets/icons/icon-512.png", "./assets/icons/apple-touch-icon.png"];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_FILES)).then(() => self.skipWaiting()));
@@ -15,7 +15,7 @@ self.addEventListener('fetch', event => {
   const requestUrl=new URL(event.request.url);
   if (!requestUrl.pathname.startsWith(new URL(self.registration.scope).pathname)) return;
   if (event.request.mode === 'navigate') {
-    event.respondWith(fetch(event.request).then(response => {
+    event.respondWith(fetch(new Request(event.request, {cache:'no-store'})).then(response => {
       if (response.ok) caches.open(CACHE_NAME).then(cache => cache.put('./index.html',response.clone())).catch(()=>{});
       return response;
     }).catch(() => caches.match('./index.html')));
