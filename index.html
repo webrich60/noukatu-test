@@ -10,7 +10,7 @@
     <link rel="manifest" href="./manifest.webmanifest">
     <link rel="icon" type="image/png" sizes="192x192" href="./assets/icons/icon-192.png">
     <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png">
-    <title>やさしい脳活日和｜12の脳活ゲーム・テスト版 v1.6.5</title>
+    <title>やさしい脳活日和｜12の脳活ゲーム・テスト版 v1.6.6</title>
     <!-- Tailwind utilities: local CSS embedded for offline-safe static hosting -->
     <style id="tailwind-local-utilities">
 /*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
@@ -2085,6 +2085,38 @@ body.home-mode #homeScreen {height:auto !important;min-height:0 !important;max-h
   #mainAppHeader .header-subtitle {font-size:17px;}
 }
 </style>
+
+<style id="game-ready-v166">
+/* v1.6.6: 各ゲームを選んだ後、明示的なスタート操作を待つ */
+#gameBoard .game-ready-card {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  width:100%; max-width:360px; padding:16px 16px 18px;
+  border:2px solid #b6e2d3; border-radius:22px;
+  background:linear-gradient(145deg,#fffef8,#eefaf5); text-align:center;
+  box-shadow:0 7px 18px rgba(34,75,56,.1); gap:8px;
+}
+#gameBoard .game-ready-art { width:92px; height:92px; object-fit:contain; border-radius:17px; }
+#gameBoard .game-ready-title {font-size:21px; line-height:1.35; font-weight:900; color:#173951; margin:0;}
+#gameBoard .game-ready-description {font-size:14px; line-height:1.55; font-weight:700; color:#344f54; margin:0;}
+#gameBoard .game-ready-mode {font-size:12px; color:#386a5d; font-weight:800;}
+#gameBoard #gameStartBtn {
+  display:block; width:100%; max-width:265px; margin-top:8px; padding:14px 12px;
+  min-height:57px; border-radius:17px; border:2px solid #b86b00;
+  color:#30200e; background:linear-gradient(135deg,#ffdf5d,#ffc52c);
+  box-shadow:0 5px 0 #c48a26,0 7px 10px rgba(60,58,14,.14);
+  font-size:21px; font-weight:900; cursor:pointer; touch-action:manipulation;
+}
+#gameBoard #gameStartBtn:active { transform:translateY(3px); box-shadow:0 2px 0 #c48a26; }
+#gameBoard #gameStartBtn:focus-visible {outline:3px solid #087d79; outline-offset:3px;}
+@media(max-height:700px){
+  #gameBoard .game-ready-card {padding:8px 11px 12px; gap:5px;}
+  #gameBoard .game-ready-art {width:65px; height:65px;}
+  #gameBoard .game-ready-title {font-size:18px;}
+  #gameBoard .game-ready-description {font-size:13px;}
+  #gameBoard #gameStartBtn {min-height:50px; padding:9px; margin-top:4px;}
+}
+</style>
+
 </head>
 <body id="appBody" class="home-mode w-full flex flex-col justify-between items-center p-2 sm:p-3">
 
@@ -2099,7 +2131,7 @@ body.home-mode #homeScreen {height:auto !important;min-height:0 !important;max-h
                         <span id="headerUserBadge" class="bg-amber-200 text-amber-900 text-[12px] px-1.5 py-0.2 rounded-full border border-amber-400 font-extrabold truncate max-w-[90px]">ゲスト様</span>
                     </h1>
                     <p id="headerSubtitle" class="header-subtitle">フクロウといっしょに楽しくチャレンジ！</p>
-                    <span class="app-version" id="appVersionLabel" aria-label="アプリのバージョン">テスト版 v1.6.5</span>
+                    <span class="app-version" id="appVersionLabel" aria-label="アプリのバージョン">テスト版 v1.6.6</span>
                 </div>
             </div>
             <button type="button" id="homeInstallBtn" onclick="handleInstallClick()" title="インストール／ホーム画面に追加" aria-label="ホーム画面に追加する方法を見る">＋ ホームに追加</button>
@@ -2907,13 +2939,56 @@ body.home-mode #homeScreen {height:auto !important;min-height:0 !important;max-h
             msgEl.className = `text-center text-sm sm:text-base font-black my-1 min-h-[1.6rem] flex items-center justify-center px-1 flex-shrink-0 ${colorClass}`;
         }
 
+        // カードからゲームを開いた時点では問題・制限時間は開始しない。
+        // どのゲームも、このゲーム画面にあるスタートボタンを押してから開始する。
+        const GAME_START_INFO = {
+            whack: {name:'笑顔タッチ', image:'assets/whack.webp', text:'笑顔が出たらタッチ！ 怒り顔は押さないでね。'},
+            signal: {name:'信号キャッチ', image:'assets/signal.webp', text:'青信号に変わったら、すばやくタッチしよう！'},
+            numbers: {name:'数字順番タッチ', image:'assets/numbers.webp', text:'数字を小さい順に見つけてタッチしよう！'},
+            calc: {name:'スピード計算', image:'assets/calc.webp', text:'表示される計算を解いてみよう！'},
+            invader: {name:'宇宙パトロール', image:'assets/invader.webp', text:'宇宙のパトロールに出発しよう！'},
+            memory: {name:'神経衰弱', image:'assets/memory.webp', text:'カードの場所を覚えて、同じ絵をそろえよう！'},
+            janken: {name:'後出しジャンケン', image:'assets/janken.webp', text:'「勝って」「負けて」の指示をよく見て出そう！'},
+            nameOrder: {name:'名前の順番記憶', image:'assets/nameOrder.webp', text:'名前が出てきた順番を覚えよう！'},
+            stroop: {name:'色当てテスト', image:'assets/stroop.webp', text:'書かれた言葉ではなく、文字の色を答えよう！'},
+            oddOne: {name:'なかまはずれ', image:'assets/oddOne.webp', text:'ひとつだけ違うものを探そう！'},
+            rotation: {name:'暗転ローテーション', image:'assets/rotation.webp', text:'光ったマスを覚え、回転した後の配置を選ぼう！'},
+            backCalc: {name:'1バック計算リレー', image:'assets/backCalc.webp', text:'今の式を計算しながら、ひとつ前の答えを選ぼう！'}
+        };
+
         function startGame(mode) {
+            if (!GAME_START_INFO[mode]) return;
             playSound('select');
             currentMode = mode;
-            isPlaying = true;
+            isPlaying = false;
             clearAllTimers();
             showScreen('gameScreen');
 
+            document.getElementById('statusLabel').textContent = 'スタート前';
+            document.getElementById('statusValue').textContent = '準備しよう！';
+            document.getElementById('scoreBox').classList.add('hidden');
+            setMessage('準備ができたら、スタートを押してね 🦉', 'text-emerald-900');
+            const info = GAME_START_INFO[mode];
+            const extra = (mode === 'rotation' || mode === 'backCalc')
+                ? (specialPlayMode === 'practice' ? '🌱 練習モード・時間制限なし' : '🏆 通常モード・全5問')
+                : `⚡ ${difficultyConfig[currentDifficulty].name} スピード`;
+            const board = document.getElementById('gameBoard');
+            board.innerHTML = `
+                <div class="game-ready-card" aria-label="${info.name} のスタート画面">
+                    <img class="game-ready-art" src="${info.image}" alt="" width="92" height="92">
+                    <h2 class="game-ready-title">${info.name}</h2>
+                    <p class="game-ready-description">${info.text}</p>
+                    <span class="game-ready-mode">${extra}</span>
+                    <button id="gameStartBtn" type="button" onclick="beginSelectedGame()">▶ スタート</button>
+                </div>`;
+        }
+
+        function beginSelectedGame() {
+            if (isPlaying || !currentMode || !GAME_START_INFO[currentMode]) return;
+            playSound('select');
+            clearAllTimers();
+            isPlaying = true;
+            const mode = currentMode;
             if (mode === 'whack') initWhackGame();
             else if (mode === 'signal') initSignalGame();
             else if (mode === 'numbers') initNumbersGame();
@@ -4567,7 +4642,7 @@ body.home-mode #homeScreen {height:auto !important;min-height:0 !important;max-h
       });
       refreshHomeInstallBtn();
       if ('serviceWorker' in navigator && (location.protocol==='https:' || location.hostname==='localhost' || location.hostname==='127.0.0.1')) {
-        window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=1.6.4', {scope:'./', updateViaCache:'none'}).then(reg => reg.update()).catch(() => {}));
+        window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=1.6.6', {scope:'./', updateViaCache:'none'}).then(reg => reg.update()).catch(() => {}));
       }
     </script>
 </body>
